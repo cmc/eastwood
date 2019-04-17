@@ -1,0 +1,15 @@
+{
+    "PG_USER": "beesafe",
+    "PG_PASS": "thisismypasswordtherearemanylikeitbutthisoneismine",
+    "PG_DB": "domains",
+    "ZF_URL": "https://zonefiles.io/a/",
+    "ZF_ZONE": "1",
+    "ZF_API_KEY": "MY_ZONEFILEIO_PRIVATE_KEY",
+    "MONITORED_BRANDS": [ "bitmex",
+        "absglobaltrading",
+        "shineeffort",
+        "hdrglobaltrading"
+    ],
+    "SLACK_WEBHOOK": "https://hooks.slack.com/services/THE/REST/OF/IT",
+    "SLEEP_TIME": 86400
+}
