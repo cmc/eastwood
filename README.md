@@ -16,11 +16,12 @@ Coming soon -
 
 
 # Quickstart
-   Get a zonefiles.io api key
-   copy config/settings.json.example to config/settings.json
-   add zonefile / keys
-   docker build -t eastwood:latest .
-   docker run eastwood:latest
+   - Get a zonefiles.io api key
+   - copy config/config.json.example to config/config.json
+   - add zonefile / keys
+   - add slack webhook to config
+   - docker build -t eastwood:latest .
+   - docker run eastwood:latest
  
 
 <img src="https://github.com/cmc/eastwood/blob/master/images/clint-eastwood.jpg" width="1000" height="800">
