@@ -5,10 +5,10 @@
     "ZF_URL": "https://zonefiles.io/a/",
     "ZF_ZONE": "1",
     "ZF_API_KEY": "MY_ZONEFILEIO_PRIVATE_KEY",
-    "MONITORED_BRANDS": [ "bitmex",
-        "absglobaltrading",
-        "shineeffort",
-        "hdrglobaltrading"
+    "MONITORED_BRANDS": [ "mybrrand",
+        "myotherbrand",
+        "Icareaboutthisbrandtoo",
+        "somuchcare"
     ],
     "SLACK_WEBHOOK": "https://hooks.slack.com/services/THE/REST/OF/IT",
     "SLEEP_TIME": 86400

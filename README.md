@@ -14,4 +14,13 @@ Coming soon -
    - Notification of matches as potential phishing sites.
    - Queued & approved dispatch of takedown emails for identified hostile sites to registrars.
 
+
+# Quickstart
+   Get a zonefiles.io api key
+   copy config/settings.json.example to config/settings.json
+   add zonefile / keys
+   docker build -t eastwood:latest .
+   docker run eastwood:latest
+ 
+
 <img src="https://github.com/cmc/eastwood/blob/master/images/clint-eastwood.jpg" width="1000" height="800">
