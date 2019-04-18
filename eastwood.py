@@ -14,6 +14,8 @@ class Eastwood(object):
     """
 
     def __init__(self):
+        self.logger = logging.getLogger('Eastwood')
+        self.logger.setLevel(logging.DEBUG)
         """
         Load Config and things.
         """
@@ -31,8 +33,8 @@ class Eastwood(object):
         response = requests.post(self.config['SLACK_WEBHOOK'], data=json.dumps(
                 data), headers={'Content-Type': 'application/json'})
 
-        logging.info('Response: ' + str(response.text))
-        logging.info('Response code: ' + str(response.status_code))
+        self.logger.info('Response: ' + str(response.text))
+        self.logger.info('Response code: ' + str(response.status_code))
 
     def monitor_brands(self):
         updates_only = True
@@ -41,14 +43,14 @@ class Eastwood(object):
                                        self.config['ZF_API_KEY'],
                                        "/updatedata/",
                                        self.config['ZF_ZONE'])
-            logging.info(
+            self.logger.info(
                 "Retrieving only new domains <24hrs: {}".format(ZF_URL))
         else:
             ZF_URL = "{}{}{}{}".format(self.config['ZF_URL'],
                                        self.config['ZF_API_KEY'],
                                        "/full/",
                                        self.config['ZF_ZONE'])
-            logging.info(
+            self.logger.info(
                 "Retrieving all domains for this zone: {}".format(ZF_URL))
 
         r = requests.get(ZF_URL, verify=False)
@@ -64,21 +66,23 @@ class Eastwood(object):
                 for brand in self.config['MONITORED_BRANDS']:
                     """ check if our brands are in the domain name, at all """
                     if brand in domain_name:
-                        logging.info("Brand name detected: {}".format(row))
+                        self.logger.info("Brand name detected: {}".format(row))
                         self.send_to_slack(
                             "Brand name detected: {}".format(row))
 
                     """ check levenshtein distance """
                     if distance(str(domain_name), str(brand)) < 3:
-                        logging.info("Similar name (distance): {}".format(row))
+                        self.logger.info("Similar name (distance): {}".format(
+                            row))
                         self.send_to_slack(
                             "Similar name (distance): {}".format(row))
 
-            logging.info("Sleeping for {}..".format(self.config['SLEEP_TIME']))
+            self.logger.info(
+                "Sleeping for {}..".format(self.config['SLEEP_TIME']))
             time.sleep(self.config['SLEEP_TIME'])
 
 
 if __name__ == "__main__":
-    logging.info("Eastwood is starting up...")
     e = Eastwood()
+    e.logger.info("Eastwood is starting up...")
     e.monitor_brands()
