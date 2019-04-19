@@ -1,7 +1,7 @@
 # Eastwood
 
 
-It's a wild place out there. There are probably a crew of less-than-well-intentioned individuals typo squatting your domains trying to phish your users. You need to locate those domains, fire off some suspension requests to the registrar, and perhaps and send them for takedown/UDRP via $insert_legal_entity_here.
+It's a wild place out there. There are probably a crew of less-than-well-intentioned individuals typo squatting your domains trying to phish your users. You need to locate those domains, fire off some takedown/suspension requests to the registrar, and perhaps seize the domain via UDRP/$insert_legal_entity_here.
 
 Eastwood runs as a service, every hour it pulls the updated zone files for all top level TLDs.
 
