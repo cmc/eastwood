@@ -9,13 +9,10 @@ It then matches them against your specified brand names. It sends findings to Sl
 
 You'll be notified of all new domains infringing on your name[s] daily.
 
-eastwood is a sister project of denzel ( https://github.com/cmc/denzel ) - which will receive POSTs from eastwood and check the discovered site for similarity to your legitimate site.
+eastwood is a sister project of [denzel](https://github.com/cmc/denzel), which will receive POSTs from eastwood and check the discovered site for similarity to your legitimate site using ssdeep fuzzy hashing.
 
 Coming soon - 
-   - Lambda crawling of identified domains for % match against your own company site
-   - Notification of matches as potential phishing sites.
    - Queued & approved dispatch of takedown emails for identified hostile sites to registrars.
-
 
 # Quickstart
 To deploy this application you require a Postgresql DB to store DNS entries. We provide that to you here through a docker-compose file. If you have docker-compose installed and would like to run this locally on your laptop, simply configure the application and run `make image` followed by a `make compose`
