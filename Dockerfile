@@ -8,5 +8,7 @@ RUN apt-get install -y postgresql curl
 COPY db ./db
 COPY config ./config
 COPY *.py ./
+COPY run.sh ./run.sh
 ADD  ./ .
-CMD [ "python", "eastwood.py" ]
+# CMD [ "python","-u","eastwood.py" ]
+CMD [ "/bin/sh","run.sh" ]

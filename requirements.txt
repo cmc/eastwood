@@ -1,2 +1,4 @@
 requests
 python-levenshtein
+sqlalchemy
+psycopg2

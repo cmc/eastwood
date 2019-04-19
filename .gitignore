@@ -1,4 +1,8 @@
 
+# Local Postgres DB data.
+postgres-data/*
+# Vim Swapfiles
+.*.swp
 # Config Files.
 config/config.json
 

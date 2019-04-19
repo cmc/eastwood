@@ -1,7 +1,8 @@
 {
-    "PG_USER": "beesafe",
-    "PG_PASS": "thisismypasswordtherearemanylikeitbutthisoneismine",
-    "PG_DB": "domains",
+    "POSTGRES_USER": "postgres",
+    "POSTGRES_PASS": "thisismypasswordtherearemanylikeitbutthisoneismine",
+    "POSTGRES_DB": "domains",
+    "POSTGRES_HOST": "postgres",
     "ZF_URL": "https://zonefiles.io/a/",
     "ZF_ZONE": "1",
     "ZF_API_KEY": "MY_ZONEFILEIO_PRIVATE_KEY",
@@ -11,5 +12,5 @@
         "somuchcare"
     ],
     "SLACK_WEBHOOK": "https://hooks.slack.com/services/THE/REST/OF/IT",
-    "SLEEP_TIME": 86400
+    "SLEEP_TIME": 3600
 }
