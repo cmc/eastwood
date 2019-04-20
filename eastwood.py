@@ -49,7 +49,7 @@ class Eastwood(object):
         self.logger.info('Response code: ' + str(response.status_code))
 
     def monitor_brands(self):
-        updates_only = True
+        updates_only = False
         if updates_only:
             ZF_URL = "{}{}{}{}".format(self.config['ZF_URL'],
                                        self.config['ZF_API_KEY'],
@@ -60,82 +60,114 @@ class Eastwood(object):
         else:
             ZF_URL = "{}{}{}{}".format(self.config['ZF_URL'],
                                        self.config['ZF_API_KEY'],
-                                       "/full/",
+                                       "/fulldata/",
                                        self.config['ZF_ZONE'])
             self.logger.info(
                 "Retrieving all domains for this zone: {}".format(ZF_URL))
 
-        r = requests.get(ZF_URL, verify=False)
-        decoded_content = r.content.decode('utf-8')
-        cr = csv.reader(decoded_content.splitlines(), delimiter=',')
-        my_list = list(cr)
-        maxc = 20
-        counter = 0
-        for item in my_list:
-            print(item)
-            counter += 1
-            if counter == maxc:
-                break
-
         while True:
-            # There's a lot of cleanup to be done here. RE DB Transactions.
 
-            self.logger.info("Retrieved {} domains.".format(len(my_list)))
-            for row in my_list:
-                domain_name = row[0].split('.')[0]
+            r = requests.get(ZF_URL, verify=False, stream=True)
 
-                for brand in self.config['MONITORED_BRANDS']:
-                    """ check if our brands are in the domain name, at all """
-                    if brand in domain_name:
-                        self.logger.info("Brand name detected: {}".format(row))
-                        self.logger.debug("Checking if Entry exists in db")
-                        existing_domain = self.db.query(Domain).filter(
-                            Domain.domain == row[0]).first()
-                        if not existing_domain:
-                            self.db.add(
-                                Domain(row[0], 'match'))
-                            self.db.commit()
-                            try:
-                                self.send_to_slack(
-                                    "Brand name detected: {}".format(row))
-                            except Exception as e:
-                                self.logger.info(
-                                    "ERROR Sending to slack! {}".format(
-                                        e.message))
-                            data = {'alerted': 'True'}
-                            new_entry = self.db.query(Domain).filter(
-                                Domain.domain == row[0]).first()
-                            self.db.query(Domain).filter(
-                               Domain.id == new_entry.id).update(data)
-                            self.db.commit()
+            for chunk in r.iter_lines(chunk_size=8096):
+                decoded_content = chunk.decode('utf-8')
+                self.logger.info(decoded_content)
+                cr = csv.reader(decoded_content.splitlines(), delimiter=',')
+                my_list = list(cr)
 
-                    """ check levenshtein distance """
-                    if distance(str(domain_name), str(brand)) < 3:
-                        self.logger.info("Similar name (distance): {}".format(
+                # There's a lot of cleanup to be done here. RE DB Transactions.
+                self.logger.info("Retrieved {} domains.".format(len(my_list)))
+                for row in my_list:
+                    # Generic struct for results to update record.
+                    # Since we don't know what we'lll actualy getb ack
+                    try:
+                        record = {
+                            'domain': row[0],
+                            'nsrecord': row[1],
+                            'ipaddress': row[2],
+                            'geo': row[3],
+                            'webserver': row[5],
+                            'hostname': row[6],
+                            'dns_contact': row[7],
+                            'alexa_traffic_rank': row[8],
+                            'contact_number': row[9],
+                        }
+                    except IndexError:
+                        self.logger.info("Error parsing result! {}".format(
                             row))
 
-                        self.logger.debug("Checking if Entry exists in db")
-                        existing_domain = self.db.query(Domain).filter(
-                            Domain.domain == row[0]).first()
-                        if not existing_domain:
-                            self.db.add(
-                                Domain(row[0], 'similar'))
-                            self.db.commit()
-                            try:
-                                self.send_to_slack(
-                                    "Similar name (distance): {}".format(row))
-                            except Exception as e:
+                    # Remove empty results
+                    record = {k: v for k, v in record.items() if v is not None}
+
+                    # Strip TLD to compare
+                    domain_name = row[0].split('.')[0]
+
+                    for brand in self.config['MONITORED_BRANDS']:
+                        """ check if our brands are in the domain name,
+                            at all """
+                        if brand in domain_name:
+                            self.logger.info("Brand name detected: {}".format(
+                                record))
+                            self.logger.debug("Checking if Entry exists in db")
+                            existing_domain = self.db.query(Domain).filter(
+                                Domain.domain == record['domain']).first()
+
+                            if not existing_domain:
+                                self.db.add(
+                                    Domain(record['domain'], 'match'))
+                                self.db.commit()
+
+                                new_entry = self.db.query(Domain).filter(
+                                    Domain.domain == record['domain']).first()
+
+                                try:
+                                    self.send_to_slack(
+                                        "Brand name detected: {}".format(
+                                            record))
+                                except Exception as e:
                                     self.logger.info(
                                         "ERROR Sending to slack! {}".format(
-                                                                 e.message))
-                            data = {'alerted': 'True'}
-                            new_entry = self.db.query(Domain).filter(
-                                Domain.domain == row[0]).first()
-                            self.db.query(Domain).filter(
-                                Domain.id == new_entry.id).update(data)
-                            self.db.commit()
+                                            e.message))
+                                record.update({'alerted': 'True'})
+                                self.db.query(Domain).filter(
+                                    Domain.id == new_entry.id).update(record)
+                                self.db.commit()
+
+                        """ check levenshtein distance """
+                        if distance(str(domain_name), str(brand)) < 3:
+                            self.logger.info(
+                                "Similar name (distance): {}".format(record))
+
+                            self.logger.debug("Checking if Entry exists in db")
+                            existing_domain = self.db.query(Domain).filter(
+                                Domain.domain == record['domain']).first()
+                            if not existing_domain:
+
+                                self.db.add(
+                                    Domain(record['domain'], 'similar'))
+                                self.db.commit()
+
+                                new_entry = self.db.query(Domain).filter(
+                                    Domain.domain == record['domain']).first()
+
+                                # if we're backfilling we don't want to spam everyone.
+                                if updates_only:
+                                    try:
+                                        self.send_to_slack(
+                                            "Similar name (distance): {}".format(
+                                                record))
+                                    except Exception as e:
+                                            self.logger.info(
+                                                "Slack exception {}".format(
+                                                                    e.message))
+
+                                    record.update({'alerted': 'True'})
+                                self.db.query(Domain).filter(
+                                    Domain.id == new_entry.id).update(record)
+                                self.db.commit()
+
             self.logger.info(
-                "Sleeping for {}..".format(self.config['SLEEP_TIME']))
+                    "Sleeping for {}..".format(self.config['SLEEP_TIME']))
             time.sleep(self.config['SLEEP_TIME'])
 
 
