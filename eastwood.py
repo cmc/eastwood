@@ -20,12 +20,8 @@ class Eastwood(object):
     def __init__(self):
         logging.basicConfig()
         self.logger = logging.getLogger('Eastwood')
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.INFO)
         self.db = Session()
-
-        existing_domains = self.db.query(Domain).all()
-        if existing_domains:
-            self.logger.info(existing_domains)
 
         """
         Load Config and things.
@@ -45,11 +41,10 @@ class Eastwood(object):
         response = requests.post(self.config['SLACK_WEBHOOK'], data=json.dumps(
                 data), headers={'Content-Type': 'application/json'})
 
-        self.logger.info('Response: ' + str(response.text))
-        self.logger.info('Response code: ' + str(response.status_code))
+        self.logger.debug('Response: ' + str(response.text))
+        self.logger.debug('Response code: ' + str(response.status_code))
 
-    def monitor_brands(self):
-        updates_only = False
+    def monitor_brands(self, updates_only=True):
         if updates_only:
             ZF_URL = "{}{}{}{}".format(self.config['ZF_URL'],
                                        self.config['ZF_API_KEY'],
@@ -71,12 +66,12 @@ class Eastwood(object):
 
             for chunk in r.iter_lines(chunk_size=8096):
                 decoded_content = chunk.decode('utf-8')
-                self.logger.info(decoded_content)
+                self.logger.debug(decoded_content)
                 cr = csv.reader(decoded_content.splitlines(), delimiter=',')
                 my_list = list(cr)
 
                 # There's a lot of cleanup to be done here. RE DB Transactions.
-                self.logger.info("Retrieved {} domains.".format(len(my_list)))
+                self.logger.debug("Retrieved {} domains.".format(len(my_list)))
                 for row in my_list:
                     # Generic struct for results to update record.
                     # Since we don't know what we'lll actualy getb ack
