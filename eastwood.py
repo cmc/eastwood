@@ -4,6 +4,7 @@ import logging
 import requests
 import time
 
+from defang import defang
 from db import Session, Base, engine
 from db.models import Domain
 from os import getenv
@@ -31,11 +32,25 @@ class Eastwood(object):
                  'CONFIG_PATH', '/src/config/config.json')) as config_data:
             self.config = json.load(config_data)
 
-    def send_to_slack(self, text):
+    def send_to_slack(self, record, match=False):
+        # Add URL Defanging to prevent slack crawl.
+        slack_msg = "Similar brand registration detected {}".format(
+            defang(record['domain']))
+        if match:
+            slack_msg = "*Brand registration detected {}*\n```".format(
+                defang(record['domain']))
+        for k, v in record.items():
+            if k == 'domain':
+                continue
+            if len(v) >= 1:
+                if "," in v:
+                    v = v.replace(",", "\n          ")
+                slack_msg += '\n{}: {}'.format(k.title(), v)
+        slack_msg += '```'
         data = {
-            'text': str(text),
-            'username': 'HAL',
-            'icon_emoji': ':robot_face:'
+            'text': slack_msg,
+            'username': 'Eastwood Brand Monitor',
+            'icon_emoji': ':male-detective:'
         }
 
         response = requests.post(self.config['SLACK_WEBHOOK'], data=json.dumps(
@@ -116,9 +131,7 @@ class Eastwood(object):
                                     Domain.domain == record['domain']).first()
 
                                 try:
-                                    self.send_to_slack(
-                                        "Brand name detected: {}".format(
-                                            record))
+                                    self.send_to_slack(record, True)
                                 except Exception as e:
                                     self.logger.info(
                                         "ERROR Sending to slack! {}".format(
@@ -145,12 +158,10 @@ class Eastwood(object):
                                 new_entry = self.db.query(Domain).filter(
                                     Domain.domain == record['domain']).first()
 
-                                # if we're backfilling we don't want to spam everyone.
+                                # if we're backfilling we don't want to spam.
                                 if updates_only:
                                     try:
-                                        self.send_to_slack(
-                                            "Similar name (distance): {}".format(
-                                                record))
+                                        self.send_to_slack(record)
                                     except Exception as e:
                                             self.logger.info(
                                                 "Slack exception {}".format(

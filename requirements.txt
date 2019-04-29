@@ -2,3 +2,4 @@ requests
 python-levenshtein
 sqlalchemy
 psycopg2
+defang
