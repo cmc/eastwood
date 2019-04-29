@@ -34,7 +34,7 @@ class Eastwood(object):
 
     def send_to_slack(self, record, match=False):
         # Add URL Defanging to prevent slack crawl.
-        slack_msg = "Similar brand registration detected {}".format(
+        slack_msg = "Similar brand registration detected {}\n```".format(
             defang(record['domain']))
         if match:
             slack_msg = "*Brand registration detected {}*\n```".format(
