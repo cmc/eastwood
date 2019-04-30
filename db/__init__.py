@@ -12,7 +12,10 @@ engine = create_engine("postgresql://{}:{}@{}:5432/{}".format(
     config['POSTGRES_USER'],
     config['POSTGRES_PASS'],
     config['POSTGRES_HOST'],
-    config['POSTGRES_DB']))
+    config['POSTGRES_DB']),
+    pool_pre_ping=True,
+    pool_recycle=300
+    )
 
 Session = sessionmaker(bind=engine)
 
