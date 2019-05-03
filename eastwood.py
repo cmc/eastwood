@@ -52,6 +52,7 @@ class Eastwood(object):
             except Exception as e:
                 self.logger.info("(Attempt {} Error adding to db {}".
                                  format(i, e))
+                self.db.rollback()
                 continue
             self.db.commit()
             break
@@ -67,6 +68,7 @@ class Eastwood(object):
             except Exception as e:
                 self.logger.info("(Attempt {} Error updating {}".
                                  format(i, e))
+                self.db.rollback()
                 continue
             self.db.commit()
             break
