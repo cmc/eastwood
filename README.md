@@ -20,8 +20,9 @@ To deploy this application you require a Postgresql DB to store DNS entries. We 
 ### Step By Step
    - Get a zonefiles.io api key
    - copy config/config.json.example to config/config.json
-   - add zonefile / keys
-   - add slack webhook to config
+   - add zonefile / keys to config/config.json
+   - add slack webhook to config/config.json
+   - update postgres db password in docker-compose.yaml
    - `make image`
    - `make compose`
  
