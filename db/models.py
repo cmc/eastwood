@@ -17,6 +17,7 @@ class Domain(Base):
         alexa_traffic_rank  Traffic Rank
         simlarity           Similar vs Match
         status              Notes for action/ further use here later.
+        threshold           Threshold distance used to determine if match.
         alerted             Alerted or not
         time_created        Datetime when db entry was added
         time_updated        Datetime when db entry was updated
@@ -34,6 +35,7 @@ class Domain(Base):
     alexa_traffic_rank = Column(String(255))
     contact_number = Column(String(255))
     similarity = Column(String(255))
+    threshold = Column(String(255))
     status = Column(String(255))
     alerted = Column(String(255))
     time_created = Column(DateTime(timezone=True),

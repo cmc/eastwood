@@ -23,6 +23,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=eastwood
       - POSTGRES_HOST=postgres
+      - YOLO_REQUESTS=true
+      - BACKFILL_RECORDS=true
     volumes:
         - ".:/src/"
     networks:

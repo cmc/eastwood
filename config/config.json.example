@@ -1,16 +1,14 @@
 {
     "POSTGRES_USER": "postgres",
-    "POSTGRES_PASS": "thisismypasswordtherearemanylikeitbutthisoneismine",
-    "POSTGRES_DB": "domains",
+    "POSTGRES_PASS": "thisisnotprod",
+    "POSTGRES_DB": "eastwood",
     "POSTGRES_HOST": "postgres",
     "ZF_URL": "https://zonefiles.io/a/",
     "ZF_ZONE": "1",
-    "ZF_API_KEY": "MY_ZONEFILEIO_PRIVATE_KEY",
-    "MONITORED_BRANDS": [ "mybrrand",
-        "myotherbrand",
-        "Icareaboutthisbrandtoo",
-        "somuchcare"
-    ],
-    "SLACK_WEBHOOK": "https://hooks.slack.com/services/THE/REST/OF/IT",
-    "SLEEP_TIME": 3600
+    "ZF_API_KEY": "getyourownapikey",
+    "MONITORED_BRANDS": [{
+        "keywords": ["your", "brand"],
+        "distance": 3,
+        "webhook": "getyourownslackwebhook"
+    }]
 }
