@@ -6,9 +6,14 @@
     "ZF_URL": "https://zonefiles.io/a/",
     "ZF_ZONE": "1",
     "ZF_API_KEY": "getyourownapikey",
+    "SLACK": {
+        "username": "Eastwood Brand Monitor",
+        "icon_emoji": ":male-detective:"
+    },
     "MONITORED_BRANDS": [{
         "keywords": ["your", "brand"],
-        "distance": 3,
+        "threshold": 3,
+        "exclusions": ["yourbrandhomepage.com", "otherwebsitesyouwouldwanttoexclude.com"],
         "webhook": "getyourownslackwebhook"
     }]
 }

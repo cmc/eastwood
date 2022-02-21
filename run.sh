@@ -9,4 +9,4 @@ done
 >&2 echo "Postgres is up - Lets do this."
 sleep 3
 
-python -u eastwood.py
+python3 -u eastwood.py

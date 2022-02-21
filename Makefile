@@ -1,5 +1,5 @@
 image:
-	docker build -t eastwood:latest .
+	DOCKER_BUILDKIT=1 docker build -t eastwood:latest .
 clean:
 	rm -rvf postgres-data/
 	docker build --no-cache -t eastwood:latest .

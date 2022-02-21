@@ -17,7 +17,7 @@ Coming soon -
 # Quickstart
 To deploy this application you require a Postgresql DB to store DNS entries. We provide that to you here through a docker-compose file. If you have docker-compose installed and would like to run this locally on your laptop, simply configure the application and run `make image` followed by a `make compose`
 
-Note - It is set by default to backfill first, this can take some time. If you are looking to quickly test before deploying we reccomend unsetting the env variable BACKFILL_RECORDS
+Note - It is set by default to backfill first, this can take some time. If you are looking to quickly test before deploying we advise unsetting the env variable BACKFILL_RECORDS 
 
 ### Step By Step
    - Get a zonefiles.io api key
