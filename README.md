@@ -20,7 +20,7 @@ To deploy this application you require a Postgresql DB to store DNS entries. We 
 Note - It is set by default to backfill first, this can take some time. If you are looking to quickly test before deploying we advise unsetting the env variable BACKFILL_RECORDS 
 
 ### Step By Step
-   - Get a zonefiles.io api key
+   - Get a NetAPI API token at https://netapi.com/ (zonefiles.io-compatible API, see https://netapi.com/zonefiles-io-api/)
    - copy config/config.json.example to config/config.json
    - add zonefile / keys
    - add slack webhook to config
