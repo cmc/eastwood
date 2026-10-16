@@ -3,7 +3,7 @@
     "POSTGRES_PASS": "thisisnotprod",
     "POSTGRES_DB": "eastwood",
     "POSTGRES_HOST": "postgres",
-    "ZF_URL": "https://zonefiles.io/a/",
+    "ZF_URL": "https://netapi.com/zf-api/a/",
     "ZF_ZONE": "1",
     "ZF_API_KEY": "getyourownapikey",
     "SLACK": {
